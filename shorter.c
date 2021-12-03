@@ -58,15 +58,11 @@ int main(int ac, char **av, char **env)
 			}
 			else
 			{
-				if (pip && (pipe(pfd) == -1))
-					ex("error: fatal\n");
-				if ((pid = fork()) == -1)
+				if ((pip && (pipe(pfd) == -1)) || (pid = fork()) == -1)
 					ex("error: fatal\n");
 				if (!pid)
 				{
-					if (lastfd != -1 && (dup2(lastfd, 0) == -1))
-						ex("error: fatal\n");
-					if (pip && (dup2(pfd[1], 1) == -1))
+					if ((lastfd != -1 && (dup2(lastfd, 0) == -1)) || (pip && (dup2(pfd[1], 1) == -1)))
 						ex("error: fatal\n");
 					if (execve(av[i - nbarg], &av[i - nbarg], env) == -1)
 					{
